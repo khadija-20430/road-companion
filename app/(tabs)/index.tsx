@@ -1,74 +1,158 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+const services = [
+  { id: '1', name: 'Tow Truck', icon: 'truck' },
+  { id: '2', name: 'Spare parts', icon: 'cogs' },
+  { id: '3', name: 'Mechanic', icon: 'wrench' },
+];
 
-export default function HomeScreen() {
+const ServicePage = () => {
+  const [phone, setPhone] = useState('');
+  const [selectedService, setSelectedService] = useState<string | null>(null);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.greeting}>Hello, Ansam</Text>
+        <Text style={styles.header}>Let’s get you moving again</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your location"
+          keyboardType="default"
+          value={phone}
+          onChangeText={setPhone}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      </View>
+      
+      <Text style={styles.subHeader}>Choose a service:</Text>
+      <FlatList
+        data={services}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={[
+              styles.serviceItem,
+              selectedService === item.id && styles.selectedService,
+            ]}
+            onPress={() => setSelectedService(item.id)}
+          >
+            <FontAwesome5 name={item.icon} size={24} color={selectedService === item.id ? '#fff' : '#000'} />
+            <Text style={[styles.serviceText, selectedService === item.id && { color: '#fff' }]}>{item.name}</Text>
+          </TouchableOpacity>
+        )}
+      />
+
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.backButton}>
+          <View style={styles.backIconContainer}>
+            <FontAwesome5 name="chevron-left" size={18} color="#fff" />
+          </View>
+          <Text style={styles.backText}>Back</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.nextButton}>
+          <Text style={styles.nextText}>Next</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  headerContainer: {
+    backgroundColor: '#021B24',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 20,
+  },
+  greeting: {
+    color: '#fff',
+    fontSize: 18,
+    marginBottom: 5,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 10,
+  },
+  input: {
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+  },
+  subHeader: {
+    fontSize: 18,
+    marginBottom: 10,
+    color: '#021B24',
+  },
+  serviceItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#021B24',
+    marginBottom: 10,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  selectedService: {
+    backgroundColor: '#021B24',
+    borderColor: '#021B24',
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  serviceText: {
+    fontSize: 16,
+    marginLeft: 10,
+    color: '#021B24',
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    borderRadius: 10,
+  },
+  backIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#021B24',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  backText: {
+    color: '#021B24',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  nextButton: {
+    alignItems: 'center',
+    backgroundColor: '#021B24',
+    paddingVertical: 10,
+    paddingHorizontal: 50,
+    borderRadius: 10,
+  },
+  nextText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
+
+export default ServicePage;
+
+
