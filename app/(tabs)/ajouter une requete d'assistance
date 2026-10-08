@@ -1,0 +1,17 @@
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from './firebaseConfig';
+
+const envoyerRequeteAssistance = async (userId, typeService, latitude, longitude) => {
+    try {
+        await addDoc(collection(db, "Requests"), {
+            userId: userId,
+            typeService: typeService,
+            localisation: { latitude, longitude },
+            statut: "En attente",
+            date: serverTimestamp()
+        });
+        console.log("Requête envoyée !");
+    } catch (e) {
+        console.error("Erreur lors de l'envoi de la requête :", e);
+    }
+};

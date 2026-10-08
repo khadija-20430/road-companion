@@ -1,0 +1,12 @@
+import { doc, updateDoc } from 'firebase/firestore';
+
+const accepterRequete = async (requestId, providerId) => {
+    const requestRef = doc(db, "Requests", requestId);
+
+    await updateDoc(requestRef, {
+        statut: "En cours",
+        providerId: providerId
+    });
+
+    console.log("Requête acceptée !");
+};

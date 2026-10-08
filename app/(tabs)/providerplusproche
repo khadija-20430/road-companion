@@ -1,0 +1,15 @@
+import { collection, getDocs, query, where } from 'firebase/firestore';
+
+const trouverProvidersDisponibles = async (typeService) => {
+    const providersRef = collection(db, "ServiceProviders");
+    const q = query(providersRef, where("type", "==", typeService), where("disponibilité", "==", true));
+
+    const querySnapshot = await getDocs(q);
+    const providers = [];
+    
+    querySnapshot.forEach((doc) => {
+        providers.push({ id: doc.id, ...doc.data() });
+    });
+
+    return providers;
+};
